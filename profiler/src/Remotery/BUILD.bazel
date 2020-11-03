@@ -16,8 +16,8 @@ cc_library(
     srcs = ["libign_common-remotery.so"],
     hdrs = headers,
     includes = ["lib"],
-    visibility = ["//visibility:public"],
     linkstatic = True,
+    visibility = ["//visibility:public"],
+    deps = [],
     alwayslink = 1,
-    deps =[],
 )

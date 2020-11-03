@@ -28,8 +28,8 @@ test_sources = [
 
 ign_export_header(
     name = "include/ignition/common/events/Export.hh",
-    lib_name = "ignition-common-events",
     export_base = "IGNITION_COMMON_EVENTS",
+    lib_name = "ignition-common-events",
     visibility = ["//visibility:private"],
 )
 
@@ -54,8 +54,8 @@ cc_binary(
     linkshared = True,
     visibility = [],
     deps = [
-        "//ign_math",
         "//ign_common",
+        "//ign_math",
     ],
 )
 
@@ -71,11 +71,11 @@ cc_library(
     name = src.replace("/", "_").replace(".cc", "").replace("src_", ""),
     srcs = [src],
     deps = [
-        "//ign_math",
         "//ign_common",
         "//ign_common/events",
         "//ign_common/test:test_utils",
-        "@gtest//:gtest",
+        "//ign_math",
+        "@gtest",
         "@gtest//:gtest_main",
-    ]
+    ],
 ) for src in test_sources]

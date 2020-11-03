@@ -14,8 +14,11 @@ load(
 package(default_visibility = ["//visibility:public"])
 
 PROJECT_NAME = "ignition-common"
+
 PROJECT_MAJOR = 4
+
 PROJECT_MINOR = 0
+
 PROJECT_PATCH = 0
 
 # Generates config.hh based on the version numbers in CMake code.
@@ -25,23 +28,23 @@ cmake_configure_file(
     out = "include/ignition/common/config.hh",
     cmakelists = ["CMakeLists.txt"],
     defines = [
-        "PROJECT_VERSION_MAJOR=%d" % (PROJECT_MAJOR),
-        "PROJECT_VERSION_MINOR=%d" % (PROJECT_MINOR),
-        "PROJECT_VERSION_PATCH=%d" % (PROJECT_PATCH),
-        "PROJECT_MAJOR_VERSION=%d" % (PROJECT_MAJOR),
-        "PROJECT_MINOR_VERSION=%d" % (PROJECT_MINOR),
-        "PROJECT_PATCH_VERSION=%d" % (PROJECT_PATCH),
+        "PROJECT_VERSION_MAJOR=%d" % PROJECT_MAJOR,
+        "PROJECT_VERSION_MINOR=%d" % PROJECT_MINOR,
+        "PROJECT_VERSION_PATCH=%d" % PROJECT_PATCH,
+        "PROJECT_MAJOR_VERSION=%d" % PROJECT_MAJOR,
+        "PROJECT_MINOR_VERSION=%d" % PROJECT_MINOR,
+        "PROJECT_PATCH_VERSION=%d" % PROJECT_PATCH,
         "PROJECT_VERSION=%d.%d" % (PROJECT_MAJOR, PROJECT_MINOR),
         "PROJECT_VERSION_FULL=%d.%d.%d" % (PROJECT_MAJOR, PROJECT_MINOR, PROJECT_PATCH),  # noqa
-        "PROJECT_NAME_NO_VERSION=%s" % (PROJECT_NAME),
+        "PROJECT_NAME_NO_VERSION=%s" % PROJECT_NAME,
     ],
     visibility = ["//visibility:private"],
 )
 
 ign_export_header(
     name = "include/ignition/common/Export.hh",
-    lib_name = "ignition-common",
     export_base = "IGNITION_COMMON",
+    lib_name = "ignition-common",
     visibility = ["//visibility:private"],
 )
 
@@ -123,8 +126,12 @@ cc_binary(
         "src/WorkerPool.cc",
     ] + private_headers + public_headers,
     includes = ["include"],
-    linkopts = ["-Wl,-soname,libignition-common4.so", "-ldl", "-luuid"],
-    linkshared =  True,
+    linkopts = [
+        "-Wl,-soname,libignition-common4.so",
+        "-ldl",
+        "-luuid",
+    ],
+    linkshared = True,
     visibility = [],
     deps = ["//ign_math"],
 )
@@ -133,9 +140,9 @@ cc_library(
     name = "ign_common",
     srcs = ["libignition-common4.so"],
     hdrs = public_headers,
-    deps = ["//ign_math"],
     includes = ["include"],
     visibility = ["//visibility:public"],
+    deps = ["//ign_math"],
 )
 
 test_srcs = [
@@ -161,7 +168,7 @@ test_srcs = [
     deps = [
         "//ign_common",
         "//ign_common/test:test_utils",
-        "@gtest//:gtest",
+        "@gtest",
         "@gtest//:gtest_main",
-    ]
+    ],
 ) for src in test_srcs]

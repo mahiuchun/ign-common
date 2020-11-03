@@ -22,10 +22,15 @@ sources = [
 
 # Configuration for UNIX
 RMT_ENABLED = 1
+
 RMT_USE_TINYCRT = 0
+
 RMT_USE_CUDA = 0
+
 RMT_USE_D3D11 = 0
+
 RMT_USE_OPENGL = 1
+
 RMT_USE_METAL = 0
 
 cmake_configure_file(
@@ -34,20 +39,20 @@ cmake_configure_file(
     out = "include/RemoteryConfig.h",
     cmakelists = ["CMakeLists.txt"],
     defines = [
-        "RMT_ENABLED=%d" % (RMT_ENABLED),
-        "RMT_USE_TINYCRT=%d" % (RMT_USE_TINYCRT),
-        "RMT_USE_CUDA=%d" % (RMT_USE_CUDA),
-        "RMT_USE_D3D11=%d" % (RMT_USE_D3D11),
-        "RMT_USE_OPENGL=%d" % (RMT_USE_OPENGL),
-        "RMT_USE_METAL=%d" % (RMT_USE_METAL),
+        "RMT_ENABLED=%d" % RMT_ENABLED,
+        "RMT_USE_TINYCRT=%d" % RMT_USE_TINYCRT,
+        "RMT_USE_CUDA=%d" % RMT_USE_CUDA,
+        "RMT_USE_D3D11=%d" % RMT_USE_D3D11,
+        "RMT_USE_OPENGL=%d" % RMT_USE_OPENGL,
+        "RMT_USE_METAL=%d" % RMT_USE_METAL,
     ],
     visibility = ["//visibility:private"],
 )
 
 ign_export_header(
     name = "include/ignition/common/profiler/Export.hh",
-    lib_name = "ignition-common-profiler",
     export_base = "IGNITION_COMMON_PROFILER",
+    lib_name = "ignition-common-profiler",
     visibility = ["//visibility:private"],
 )
 
@@ -71,14 +76,14 @@ public_headers = public_headers_no_gen + [
 cc_binary(
     name = "libignition-common3-profiler.so",
     srcs = sources + public_headers,
+    defines = [
+        "IGN_PROFILER_ENABLE=1",
+        "IGN_PROFILER_REMOTERY=1",
+    ],
     includes = ["include"],
     linkopts = ["-Wl,-soname,libignition-common3-profiler.so"],
     linkshared = True,
     visibility = [],
-    defines = [
-        "IGN_PROFILER_ENABLE=1",
-        "IGN_PROFILER_REMOTERY=1"
-    ],
     deps = [
         "//ign_common",
         "//ign_common/profiler/src/Remotery:remotery",
@@ -90,12 +95,11 @@ cc_library(
     srcs = ["libignition-common3-profiler.so"],
     hdrs = public_headers,
     includes = ["include"],
-    visibility = ["//visibility:public"],
     linkstatic = True,
-    alwayslink = 1,
+    visibility = ["//visibility:public"],
     deps = [":libignition-common3-profiler.so"],
+    alwayslink = 1,
 )
-
 
 cc_test(
     name = "Profiler_Disabled_TEST",
@@ -106,10 +110,10 @@ cc_test(
     ],
     deps = [
         "//ign_common",
-        "//ign_common/profiler:profiler",
-        "@gtest//:gtest",
+        "//ign_common/profiler",
+        "@gtest",
         "@gtest//:gtest_main",
-    ]
+    ],
 )
 
 cc_test(
@@ -117,8 +121,8 @@ cc_test(
     srcs = ["src/Profiler_Remotery_TEST.cc"],
     deps = [
         "//ign_common",
-        "//ign_common/profiler:profiler",
-        "@gtest//:gtest",
+        "//ign_common/profiler",
+        "@gtest",
         "@gtest//:gtest_main",
-    ]
+    ],
 )

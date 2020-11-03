@@ -16,8 +16,8 @@ cc_library(
     srcs = ["libign_common-tinyxml2.so"],
     hdrs = headers,
     includes = ["."],
-    visibility = ["//visibility:public"],
     linkstatic = True,
+    visibility = ["//visibility:public"],
+    deps = [],
     alwayslink = 1,
-    deps =[],
 )

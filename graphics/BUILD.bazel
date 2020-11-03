@@ -66,8 +66,8 @@ sources = [
 
 ign_export_header(
     name = "include/ignition/common/graphics/Export.hh",
-    lib_name = "ignition-common-graphics",
     export_base = "IGNITION_COMMON_GRAPHICS",
+    lib_name = "ignition-common-graphics",
     visibility = ["//visibility:private"],
 )
 
@@ -88,20 +88,24 @@ public_headers = public_headers_no_gen + [
 cc_binary(
     name = "libignition-common3-graphics.so",
     srcs = sources + public_headers,
-    includes = ["include"],
-    linkopts = ["-Wl,-soname,libignition-common3-graphics.so", "-lfreeimage", "-lgts"],
-    linkshared = True,
-    visibility = [],
     copts = [
         "-Iexternal/glib",
         "-Iexternal/glibconfig",
     ],
+    includes = ["include"],
+    linkopts = [
+        "-Wl,-soname,libignition-common3-graphics.so",
+        "-lfreeimage",
+        "-lgts",
+    ],
+    linkshared = True,
+    visibility = [],
     deps = [
+        "//ign_common",
+        "//ign_common/graphics/src/tinyxml2",
+        "//ign_math",
         "@glib//:headers",
         "@glibconfig//:headers",
-        "//ign_common",
-        "//ign_common/graphics/src/tinyxml2:tinyxml2",
-        "//ign_math",
     ],
 )
 
@@ -138,11 +142,10 @@ test_sources = [
     deps = [
         "//ign_common",
         "//ign_common/graphics",
+        "//ign_common/graphics/src/tinyxml2",
         "//ign_common/test:test_utils",
-        "//ign_common/graphics/src/tinyxml2:tinyxml2",
         "//ign_math",
-        "@gtest//:gtest",
+        "@gtest",
         "@gtest//:gtest_main",
-    ]
+    ],
 ) for src in test_sources]
-

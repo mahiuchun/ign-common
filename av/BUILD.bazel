@@ -30,8 +30,8 @@ test_sources = [
 
 ign_export_header(
     name = "include/ignition/common/av/Export.hh",
-    lib_name = "ignition-common-av",
     export_base = "IGNITION_COMMON_AV",
+    lib_name = "ignition-common-av",
     visibility = ["//visibility:private"],
 )
 
@@ -52,12 +52,17 @@ cc_binary(
     name = "libignition-common3-av.so",
     srcs = sources + public_headers,
     includes = ["include"],
-    linkopts = ["-Wl,-soname,libignition-common3-av.so",
-                "-lswscale", "-lavdevice", "-lavformat", "-lavcodec"],
+    linkopts = [
+        "-Wl,-soname,libignition-common3-av.so",
+        "-lswscale",
+        "-lavdevice",
+        "-lavformat",
+        "-lavcodec",
+    ],
     linkshared = True,
     visibility = [],
     deps = [
-        "//ign_common:ign_common",
+        "//ign_common",
     ],
 )
 
@@ -66,10 +71,10 @@ cc_library(
     srcs = ["libignition-common3-av.so"],
     hdrs = public_headers,
     includes = ["include"],
-    visibility = ["//visibility:public"],
     linkstatic = True,
-    alwayslink = 1,
+    visibility = ["//visibility:public"],
     deps = ["libignition-common3-av.so"],
+    alwayslink = 1,
 )
 
 [cc_test(
@@ -79,10 +84,7 @@ cc_library(
         "//ign_common",
         "//ign_common/av",
         "//ign_common/test:test_utils",
-        "@gtest//:gtest",
+        "@gtest",
         "@gtest//:gtest_main",
-    ]
+    ],
 ) for src in test_sources]
-
-
-

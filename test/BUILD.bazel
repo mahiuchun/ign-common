@@ -4,6 +4,7 @@ load(
 )
 
 BINARY_DIR = "./ign_common"
+
 SOURCE_DIR = "./ign_common"
 
 # Generates config.hh based on the version numbers in CMake code.
@@ -13,15 +14,18 @@ cmake_configure_file(
     out = "test_config.h",
     cmakelists = ["CMakeLists.txt"],
     defines = [
-        "PROJECT_BINARY_DIR=%s" % (BINARY_DIR),
-        "PROJECT_SOURCE_DIR=%s" % (SOURCE_DIR),
+        "PROJECT_BINARY_DIR=%s" % BINARY_DIR,
+        "PROJECT_SOURCE_DIR=%s" % SOURCE_DIR,
     ],
     visibility = ["//visibility:private"],
 )
 
 cc_library(
     name = "test_utils",
-    srcs = ["test_config.h", "test_util.hh"],
+    srcs = [
+        "test_config.h",
+        "test_util.hh",
+    ],
     includes = ["."],
     visibility = ["//visibility:public"],
 )
