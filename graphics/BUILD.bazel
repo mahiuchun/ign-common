@@ -1,10 +1,17 @@
 load(
-    "//ign_bazel:generate_include_header.bzl",
+    "//ign_bazel:build_defs.bzl",
+    "IGNITION_ROOT",
+    "IGNITION_VISIBILITY",
     "generate_include_header",
-)
-load(
-    "//ign_bazel:ign_export_header.bzl",
     "ign_export_header",
+)
+
+package(
+    default_visibility = IGNITION_VISIBILITY,
+    features = [
+        "-parse_headers",
+        "-layering_check",
+    ],
 )
 
 public_headers_no_gen = [
@@ -85,37 +92,26 @@ public_headers = public_headers_no_gen + [
     "src/tiny_obj_loader.h",
 ]
 
-cc_binary(
-    name = "libignition-common3-graphics.so",
-    srcs = sources + public_headers,
-    copts = [
-        "-Iexternal/glib",
-        "-Iexternal/glibconfig",
-    ],
+cc_library(
+    name = "graphics",
+    srcs = sources,
+    hdrs = public_headers,
     includes = ["include"],
-    linkopts = [
-        "-Wl,-soname,libignition-common3-graphics.so",
-        "-lfreeimage",
-        "-lgts",
-    ],
-    linkshared = True,
-    visibility = [],
     deps = [
-        "//ign_common",
-        "//ign_common/graphics/src/tinyxml2",
-        "//ign_math",
-        "@glib//:headers",
-        "@glibconfig//:headers",
+        "@freeimage",
+        "@glib",
+        "@gts",
+        "@tinyxml2",
+        IGNITION_ROOT + "ign_common",
     ],
 )
 
-cc_library(
-    name = "graphics",
-    srcs = ["libignition-common3-graphics.so"],
-    hdrs = public_headers,
+cc_binary(
+    name = "libignition-common3-graphics.so",
     includes = ["include"],
-    visibility = ["//visibility:public"],
-    deps = [],
+    linkopts = ["-Wl,-soname,libignition-common3-graphics.so"],
+    linkshared = True,
+    deps = [":graphics"],
 )
 
 test_sources = [
@@ -138,13 +134,12 @@ test_sources = [
 [cc_test(
     name = src.replace("/", "_").replace(".cc", "").replace("src_", ""),
     srcs = [src],
-    data = ["//ign_common/test:data"],
+    data = [
+        IGNITION_ROOT + "ign_common/test:data",
+    ],
     deps = [
-        "//ign_common",
-        "//ign_common/graphics",
-        "//ign_common/graphics/src/tinyxml2",
-        "//ign_common/test:test_utils",
-        "//ign_math",
+        ":graphics",
+        IGNITION_ROOT + "ign_common/test:test_utils",
         "@gtest",
         "@gtest//:gtest_main",
     ],

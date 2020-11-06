@@ -1,10 +1,17 @@
 load(
-    "//ign_bazel:generate_include_header.bzl",
+    "//ign_bazel:build_defs.bzl",
+    "IGNITION_ROOT",
+    "IGNITION_VISIBILITY",
     "generate_include_header",
-)
-load(
-    "//ign_bazel:ign_export_header.bzl",
     "ign_export_header",
+)
+
+package(
+    default_visibility = IGNITION_VISIBILITY,
+    features = [
+        "-parse_headers",
+        "-layering_check",
+    ],
 )
 
 public_headers_no_gen = [
@@ -46,35 +53,30 @@ public_headers = public_headers_no_gen + [
     "include/ignition/common/events.hh",
 ]
 
-cc_binary(
-    name = "libignition-common3-events.so",
-    srcs = sources + public_headers,
+cc_library(
+    name = "events",
+    srcs = sources,
+    hdrs = public_headers,
     includes = ["include"],
-    linkopts = ["-Wl,-soname,libignition-common3-events.so"],
-    linkshared = True,
-    visibility = [],
     deps = [
-        "//ign_common",
-        "//ign_math",
+        IGNITION_ROOT + "ign_common",
     ],
 )
 
-cc_library(
-    name = "events",
-    srcs = ["libignition-common3-events.so"],
-    hdrs = public_headers,
+cc_binary(
+    name = "libignition-common3-events.so",
     includes = ["include"],
-    visibility = ["//visibility:public"],
+    linkopts = ["-Wl,-soname,libignition-common3-events.so"],
+    linkshared = True,
+    deps = [":events"],
 )
 
 [cc_test(
     name = src.replace("/", "_").replace(".cc", "").replace("src_", ""),
     srcs = [src],
     deps = [
-        "//ign_common",
-        "//ign_common/events",
-        "//ign_common/test:test_utils",
-        "//ign_math",
+        ":events",
+        IGNITION_ROOT + "ign_common/test:test_utils",
         "@gtest",
         "@gtest//:gtest_main",
     ],

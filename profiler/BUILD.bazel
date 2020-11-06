@@ -1,14 +1,18 @@
 load(
-    "//ign_bazel:cmake_configure_file.bzl",
+    "//ign_bazel:build_defs.bzl",
+    "IGNITION_ROOT",
+    "IGNITION_VISIBILITY",
     "cmake_configure_file",
-)
-load(
-    "//ign_bazel:generate_include_header.bzl",
     "generate_include_header",
-)
-load(
-    "//ign_bazel:ign_export_header.bzl",
     "ign_export_header",
+)
+
+package(
+    default_visibility = IGNITION_VISIBILITY,
+    features = [
+        "-parse_headers",
+        "-layering_check",
+    ],
 )
 
 public_headers_no_gen = [
@@ -73,32 +77,34 @@ public_headers = public_headers_no_gen + [
     "include/RemoteryConfig.h",
 ]
 
-cc_binary(
-    name = "libignition-common3-profiler.so",
-    srcs = sources + public_headers,
+cc_library(
+    name = "remotery",
+    srcs = ["src/Remotery/lib/Remotery.c"],
+    hdrs = ["src/Remotery/lib/Remotery.h"],
+    includes = ["src/Remotery/lib"],
+)
+
+cc_library(
+    name = "profiler",
+    srcs = sources,
+    hdrs = public_headers,
     defines = [
         "IGN_PROFILER_ENABLE=1",
         "IGN_PROFILER_REMOTERY=1",
     ],
     includes = ["include"],
-    linkopts = ["-Wl,-soname,libignition-common3-profiler.so"],
-    linkshared = True,
-    visibility = [],
     deps = [
-        "//ign_common",
-        "//ign_common/profiler/src/Remotery:remotery",
+        IGNITION_ROOT + "ign_common",
+        ":remotery",
     ],
 )
 
-cc_library(
-    name = "profiler",
-    srcs = ["libignition-common3-profiler.so"],
-    hdrs = public_headers,
+cc_binary(
+    name = "libignition-common3-profiler.so",
     includes = ["include"],
-    linkstatic = True,
-    visibility = ["//visibility:public"],
-    deps = [":libignition-common3-profiler.so"],
-    alwayslink = 1,
+    linkopts = ["-Wl,-soname,libignition-common3-profiler.so"],
+    linkshared = True,
+    deps = [":profiler"],
 )
 
 cc_test(
@@ -109,8 +115,7 @@ cc_test(
         "IGN_PROFILER_REMOTERY=0",
     ],
     deps = [
-        "//ign_common",
-        "//ign_common/profiler",
+        ":profiler",
         "@gtest",
         "@gtest//:gtest_main",
     ],
@@ -120,8 +125,7 @@ cc_test(
     name = "Profiler_Remotery_TEST",
     srcs = ["src/Profiler_Remotery_TEST.cc"],
     deps = [
-        "//ign_common",
-        "//ign_common/profiler",
+        ":profiler",
         "@gtest",
         "@gtest//:gtest_main",
     ],
