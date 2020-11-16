@@ -1,8 +1,8 @@
 load(
     "//ign_bazel:build_defs.bzl",
+    "IGNITION_FEATURES",
     "IGNITION_ROOT",
     "IGNITION_VISIBILITY",
-    "cmake_configure_file",
     "generate_include_header",
     "ign_config_header",
     "ign_export_header",
@@ -10,10 +10,7 @@ load(
 
 package(
     default_visibility = IGNITION_VISIBILITY,
-    features = [
-        "-parse_headers",
-        "-layering_check",
-    ],
+    features = IGNITION_FEATURES,
 )
 
 licenses(["notice"])
@@ -123,8 +120,8 @@ cc_library(
     ] + private_headers,
     hdrs = public_headers,
     includes = ["include"],
+    linkopts = ["-dl"],
     deps = [
-        "@dl",
         "@uuid",
         IGNITION_ROOT + "ign_math",
     ],
