@@ -158,6 +158,7 @@ test_srcs = [
     data = [":libignition-common3.so"],
     deps = [
         ":ign_common",
+        IGNITION_ROOT + "ign_bazel:utilities",
         IGNITION_ROOT + "ign_common/test:test_utils",
         "@gtest",
         "@gtest//:gtest_main",

@@ -40,7 +40,7 @@ TEST_F(MaterialTest, Material)
       "materials", "textures", "texture_image");
   EXPECT_STREQ(texturePath.c_str(), mat.TextureImage().c_str());
 
-  texturePath = common::joinPaths(std::string(PROJECT_SOURCE_PATH), "test",
+  texturePath = common::joinPaths(common::absPath(PROJECT_SOURCE_PATH), "test",
       "data", "box.dae");
 
   mat.SetTextureImage(texturePath, "bad_path");
