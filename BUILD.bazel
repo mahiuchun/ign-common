@@ -120,7 +120,7 @@ cc_library(
     ] + private_headers,
     hdrs = public_headers,
     includes = ["include"],
-    linkopts = ["-dl"],
+    linkopts = ["-ldl"],
     deps = [
         "@uuid",
         IGNITION_ROOT + "ign_math",
@@ -130,7 +130,7 @@ cc_library(
 cc_binary(
     name = "libignition-common3.so",
     includes = ["include"],
-    linkopts = ["-Wl,-soname,libignition-common4.so"],
+    linkopts = ["-Wl,-soname,libignition-common3.so"],
     linkshared = True,
     deps = [":ign_common"],
 )
@@ -155,6 +155,7 @@ test_srcs = [
 [cc_test(
     name = src.replace("/", "_").replace(".cc", "").replace("src_", ""),
     srcs = [src],
+    data = [":libignition-common3.so"],
     deps = [
         ":ign_common",
         IGNITION_ROOT + "ign_common/test:test_utils",
